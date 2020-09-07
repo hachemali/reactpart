@@ -46,7 +46,6 @@ export default function UserProfile() {
   const updatePass = (event) => {
     setUser({ ...user, [event.target.name]: event.target.value });
   };
-  
   const [error, setError] = useState({message: "", isError: false}) 
 const submitHandler = async (e) => {
 e.preventDefault();
@@ -55,20 +54,20 @@ try {
 const {new_password,new_password_2, old_password} = user;
 setError({message: "", isError: false });
 if(new_password === new_password_2){
-const resp = await Axios({
-    method: "POST",
-    url: `http://localhost:3001/api/profile/password`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: user,
-  });
-  console.log(resp);
-} catch (error) {
-  console.log(error.message);
-}
+  const resp = await Axios({
+      method: "POST",
+      url: `http://localhost:3001/api/profile/password`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {new_password,old_password},
+    });
+    console.log(resp);
 } else {
 setError({message: "Password mismatch", isError: true})
+}
+} catch (error) {
+  console.log(error.message);
 }
   
 };
@@ -102,41 +101,6 @@ setError({message: "Password mismatch", isError: true})
     <div>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Edit Email</h4>
-              <p className={classes.cardCategoryWhite}>
-                Update your current email address
-              </p>
-            </CardHeader>
-            <CardBody>
-            <form className={classes.form} noValidate onSubmit={submitHandler2}>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                <TextField
-                    label="Email address"
-                    id="new_email"
-                    fullWidth
-                      required
-                      name="new_email"
-                      autoComplete="new_email"
-                      autoFocus
-                      onChange={updateMail}
-                    
-                  />
-                </GridItem>
-              </GridContainer>
-              </form>
-            </CardBody>
-            <CardFooter>
-              <Button color="primary"
-              type="submit"
-              variant="contained"
-              className={classes.submit}>Update Email</Button>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
         <form className={classes.form} noValidate onSubmit={submitHandler}>
           <Card>
             <CardHeader color="primary">
@@ -165,6 +129,7 @@ setError({message: "Password mismatch", isError: true})
                     label="New Password"
                     required
                     type="password"
+                    onChange={updatePass}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
@@ -173,6 +138,7 @@ setError({message: "Password mismatch", isError: true})
                     label="Confirm Password"
                     required
                     type="password"
+                    onChange={updatePass}
                   />
                 </GridItem>
               </GridContainer>

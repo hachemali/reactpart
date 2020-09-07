@@ -22,9 +22,8 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import Unarchive from "@material-ui/icons/Unarchive";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
+import TeacherDashboard from "views/TeacherDashboard/TeacherDashboard";
 import UserProfile from "views/UserProfile/UserProfile.js";
-import Typography from "views/Typography/Typography.js";
-import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 import SurveyPage from "views/SurveyPage/SurveyPage";
 // core components/views for RTL layout
 
@@ -38,27 +37,20 @@ const dashboardRoutes = [
     role: "student",
   },
   {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: Dashboard,
+    component: TeacherDashboard,
+    layout: "/teacher",
+    role: "teacher",
+  },
+  {
     path: "/user",
     name: "User Profile",
     icon: Person,
     component: UserProfile,
     layout: "/admin",
-    role: "student",
-  },
-
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: LibraryBooks,
-    component: Typography,
-    layout: "/admin",
-  },
-  {
-    path: "/upgrade-to-pro",
-    name: "Upgrade To PRO",
-    icon: Unarchive,
-    component: UpgradeToPro,
-    layout: "/admin",
+    role: "all",
   },
   {
     path: "/student/:section_id/:Department_id",

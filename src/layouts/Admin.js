@@ -19,9 +19,9 @@ let ps;
 const switchRoutes = (
   <Switch>
     {routes
-      .filter((route) => route.role === "student")
+      .filter((route) => ["student", "all"].includes(route.role))
       .map((prop, key) => {
-        if (prop.layout === "/admin") {
+        if (prop.layout === "/admin" || prop.layout === "/all") {
           return (
             <Route
               path={prop.layout + prop.path}
@@ -83,6 +83,7 @@ export default function Admin({ ...rest }) {
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
         color={color}
+        role="student"
         {...rest}
       />
       <div className={classes.mainPanel} ref={mainPanel}>

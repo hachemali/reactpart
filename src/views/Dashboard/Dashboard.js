@@ -10,6 +10,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardIcon from "components/Card/CardIcon.js";
 import Icon from "@material-ui/core/Icon";
+import { useCookies } from "react-cookie";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
@@ -69,33 +70,54 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
+  const [cookies] = useCookies([]);
   const [students, setstudents] = useState([]);
+  const [Loading, setLoading] = useState(true);
+  const [done, setDone] = useState();
+  const [total, setTotal] = useState();
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "http://localhost:3001/student/courses",
+          url: "https://survey-ul.info/server/api/student/courses",
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setstudents(resp.data);
-      } catch (err) {}
+        setstudents(resp.data.surveys);
+        setDone(resp.data.voted_count);
+        setTotal(resp.data.total_courses);
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchStudents();
   }, []);
+
+  useEffect(() => {
+    if (students.length) {
+      setLoading(false);
+    }
+  }, [students]);
   const classes = useStyles();
-  const getTableData = students => {
-    return students.map( student => [
-        student.surveys.Course_code, 
-        student.survey.Course_name,
-        (<a href={`http://localhost:3000/student/course/:${student.section_id}/:${student.Department_id}`}>
-              {student.Course_code}
-         </a>
-        )
-    ]);
-};
+  const getTableData = (students) => {
+    let courses = [];
+    for (const student of students) {
+      let course = [];
+      course.push(student.course_code);
+      course.push(student.course_name);
+      course.push(
+        <a
+          href={`http://localhost:3000/admin/student/course/:${student.section_id}/:${student.department_id}`}
+        >
+          {student.course_code}
+        </a>
+      );
+      courses.push(course);
+    }
+    return courses;
+  };
   return (
     <GridContainer>
       <GridItem xs={12} sm={6} md={3}>
@@ -105,7 +127,9 @@ export default function Dashboard() {
               <Icon>content_copy</Icon>
             </CardIcon>
             <p className={classes.cardCategory}>Completed surveys</p>
-            <h3 className={classes.cardTitle}>{students.toatl_voted}/{students.total_courses}</h3>
+            <h3 className={classes.cardTitle}>
+              {done}/{total}
+            </h3>
           </CardHeader>
         </Card>
       </GridItem>
@@ -118,17 +142,16 @@ export default function Dashboard() {
             </p>
           </CardHeader>
           <CardBody>
-          <Table
-          
-          tableHead={["Course Code", "Course Name", "Survey Link"]}
-          tableData={getTableData(students)}
-          tableHeaderColor="primary"
-          />
+            {!Loading && (
+              <Table
+                tableHead={["Course Code", "Course Name", "Survey Link"]}
+                tableData={getTableData(students)}
+                tableHeaderColor="primary"
+              />
+            )}
           </CardBody>
         </Card>
       </GridItem>
     </GridContainer>
   );
 }
-
-
