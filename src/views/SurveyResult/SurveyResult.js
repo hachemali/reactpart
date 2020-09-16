@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import Axios from "axios";
+// core components
+import { withStyles } from "@material-ui/core/styles";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import CardIcon from "components/Card/CardIcon.js";
-import Icon from "@material-ui/core/Icon";
+import Axios from "axios";
+import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import QuestionResult from "components/QuestionResult/QuestionResult";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
-import { useRadioGroup } from "@material-ui/core";
-
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -69,60 +68,39 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function TeacherDashboard() {
-  const [courses, setCourses] = useState([]);
+export default function SurveyResult(props) {
+  const [questions, setQuestions] = useState([]);
+  const [rate, setRate] = useState(0);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [freetext, setFreetext] = useState([]);
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchStudents = async () => {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/teacher/courses",
+          url: "https://survey-ul.info/server/api/teacher/course/75/4",
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setCourses(resp.data.courses);
+        setRate(resp.data.participation_rate);
+        setScore(parseFloat(resp.data.course_score));
+        setFreetext(resp.data.free_text);
+        setQuestions(resp.data.questions);
       } catch (err) {}
     };
-    const fetchScore = async () => {
-      try {
-        const resp = await Axios({
-          method: "GET",
-          url: "https://survey-ul.info/server/api/teacher/score",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        setScore(resp.data.score);
-      } catch (err) {}
-    };
-    fetchCourses();
-    fetchScore();
+    fetchStudents();
   }, []);
 
   useEffect(() => {
-    if (score > 0) {
+    if (questions.length) {
       setLoading(false);
     }
-  }, [score]);
+  }, [questions]);
 
   const classes = useStyles();
-  const getTableData = (courses) => {
-    return courses.map((course) => [
-      course.Course_code,
-      course.Course_name,
-      course.Branch_city,
-      course.score,
-      course.participation,
-      <a
-        href={`http://localhost:3000/teacher/course/${course.section_id}/${course.Department_id}`}
-      >
-        See Results
-      </a>,
-    ]);
-  };
+
   return loading ? (
     <CircularProgress />
   ) : (
@@ -130,38 +108,16 @@ export default function TeacherDashboard() {
       <GridItem xs={12} sm={6} md={3}>
         <Card>
           <CardHeader color="warning" stats icon>
-            <CardIcon color="warning">
-              <Icon>content_copy</Icon>
-            </CardIcon>
-            <p className={classes.cardCategory}>General Score</p>
-            <h3 className={classes.cardTitle}>{score}</h3>
+            <p className={classes.cardCategory}>Course Score</p>
+            <h3 className={classes.cardTitle}></h3>
           </CardHeader>
+          <CardBody></CardBody>
         </Card>
       </GridItem>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card>
-          <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Available Results</h4>
-            <p className={classes.cardCategoryWhite}>
-              List of courses you teach
-            </p>
-          </CardHeader>
-          <CardBody>
-            <Table
-              tableHead={[
-                "Course Code",
-                "Course Name",
-                "Branch",
-                "Score",
-                "Participation",
-                "Survey Link",
-              ]}
-              tableData={getTableData(courses)}
-              tableHeaderColor="primary"
-            />
-          </CardBody>
-        </Card>
-      </GridItem>
+      {questions.map((question) => (
+        <QuestionResult question={question} />
+      ))}
+      <QuestionResult question={questions[0]} />
     </GridContainer>
   );
 }

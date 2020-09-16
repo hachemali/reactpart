@@ -98,8 +98,6 @@ export default function SurveyPage(props) {
           url: "https://survey-ul.info/server/api/student/course/66/1",
           headers: {
             "Content-Type": "application/json",
-            x_auth_token:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNTk5MjE1MjE3LCJleHAiOjE1OTk0NzQ0MTd9.enQZyspGWUnYAZnKdRDFrrEG0FegiR4Ts6F1VpXgrLQ",
           },
         });
         setLists(resp.data.lists);

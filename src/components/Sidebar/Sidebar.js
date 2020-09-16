@@ -51,6 +51,7 @@ export default function Sidebar(props) {
     <List className={classes.list}>
       {routes
         .filter((route) => role.includes(route.role))
+        .filter((route) => route.visible)
         .map((prop, key) => {
           var activePro = " ";
           var listItemClasses;

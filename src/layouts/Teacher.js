@@ -45,7 +45,7 @@ export default function Teacher({ ...rest }) {
   const mainPanel = React.createRef();
   // states and functions
   const [image] = React.useState(bgImage);
-  const [color] = React.useState("blue");
+  const [color] = React.useState("purple");
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {

@@ -25,6 +25,7 @@ import Axios from "axios";
 // core components
 import Admin from "layouts/Admin.js";
 import Teacher from "layouts/Teacher";
+import SurveyResult from "views/SurveyResult/SurveyResult";
 import SignIn from "views/SignIn/SignIn";
 import Reset from "views/PassReset/PassReset";
 import { Context as AuthContext } from "context/User";
@@ -78,7 +79,7 @@ export default function App() {
           <Router history={hist}>
             <Switch>
               <Route path="/teacher" component={Teacher} />
-              <Redirect from="/" to="/teacher" />
+              <Redirect from="/" to="/teacher/dashboard" />
             </Switch>
           </Router>
         );

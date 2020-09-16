@@ -45,7 +45,7 @@ export default function Admin({ ...rest }) {
   const mainPanel = React.createRef();
   // states and functions
   const [image] = React.useState(bgImage);
-  const [color] = React.useState("blue");
+  const [color] = React.useState("purple");
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -83,7 +83,7 @@ export default function Admin({ ...rest }) {
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
         color={color}
-        role="student"
+        role={["student", "all"]}
         {...rest}
       />
       <div className={classes.mainPanel} ref={mainPanel}>

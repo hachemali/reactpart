@@ -16,6 +16,8 @@ import Axios from "axios";
 import { Context as AuthContext } from "../../context/User";
 import { LOGIN_USER } from "../../context/actionTypes";
 import campus from "assets/img/campus.jpg";
+import Snackbar from "components/Snackbar/Snackbar.js";
+import AddAlert from "@material-ui/icons/AddAlert";
 
 function Copyright() {
   return (
@@ -74,6 +76,8 @@ export default function SignIn(props) {
     role: "",
   });
 
+  const [open, setOpen] = React.useState(false);
+
   const [login, setLogin] = useState(false);
 
   const updateUser = (event) => {
@@ -106,6 +110,7 @@ export default function SignIn(props) {
       setLogin(true);
       window.location.reload();
     } catch (error) {
+      setOpen(true);
       console.log(error.message);
     }
   };
@@ -119,6 +124,15 @@ export default function SignIn(props) {
   ) : (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
+      <Snackbar
+        place={"tc"}
+        color={"danger"}
+        icon={AddAlert}
+        message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
+        open={open}
+        closeNotification={() => setOpen(false)}
+        close
+      />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
