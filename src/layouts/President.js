@@ -19,9 +19,9 @@ let ps;
 const switchRoutes = (
   <Switch>
     {routes
-      .filter((route) => ["teacher", "all"].includes(route.role))
+      .filter((route) => ["president", "dean", "all"].includes(route.role))
       .map((prop, key) => {
-        if (prop.layout === "/teacher") {
+        if (["/dean", "/president", "/all"].includes(prop.layout)) {
           return (
             <Route
               path={prop.layout + prop.path}
@@ -32,13 +32,15 @@ const switchRoutes = (
         }
         return null;
       })}
-    <Redirect from="/teacher" to="/teacher/dashboard" />
+    <Redirect from="/president" to="/president/dashboard" />
+    <Redirect from="/all" to="/president/dashboard" />
+    <Redirect from="/dean" to="/president/dashboard" />
   </Switch>
 );
 
 const useStyles = makeStyles(styles);
 
-export default function Teacher({ ...rest }) {
+export default function President({ ...rest }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -83,7 +85,7 @@ export default function Teacher({ ...rest }) {
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
         color={color}
-        role={["teacher", "all"]}
+        role={["dean", "all", "president"]}
         {...rest}
       />
       <div className={classes.mainPanel} ref={mainPanel}>

@@ -95,7 +95,7 @@ export default function SurveyPage(props) {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/student/course/66/1",
+          url: `https://survey-ul.info/server/api/student/course/${props.match.params.section_id}/${props.match.params.Department_id}`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -136,11 +136,9 @@ export default function SurveyPage(props) {
         try {
           const resp = await Axios({
             method: "POST",
-            url: "https://survey-ul.info/server/api/student/course/66",
+            url: `https://survey-ul.info/server/api/student/course/${props.match.params.section_id}`,
             headers: {
               "Content-Type": "application/json",
-              x_auth_token:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNTk5MjE1MjE3LCJleHAiOjE1OTk0NzQ0MTd9.enQZyspGWUnYAZnKdRDFrrEG0FegiR4Ts6F1VpXgrLQ",
             },
             data: result,
           });
@@ -149,7 +147,6 @@ export default function SurveyPage(props) {
           console.log(error.message);
         }
       };
-      // DO NOT REMOVE THIS COMMENT
       fetchStudents();
     }
   }, [result]);
@@ -177,77 +174,114 @@ export default function SurveyPage(props) {
 
   const classes = useStyles();
 
-  return (
-    <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
-        {loading ? (
-          <p>Loading</p>
-        ) : (
+  return loading ? (
+    <p>Loading</p>
+  ) : (
+    <div>
+      <GridContainer justify="center" alignItems="center">
+        <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Survey</h4>
+              <h4 className={classes.cardTitleWhite}>Survey Questionnaire</h4>
               <p className={classes.cardCategoryWhite}>
                 Check answers carefully
               </p>
             </CardHeader>
             <CardBody>
-              <form
-                className={classes.root}
-                noValidate
-                autoComplete="off"
-                onSubmit={handleSubmit}
-              >
-                <GridContainer>
-                  <FormControl component="fieldset">
-                    <FormLabel component="legend">SURVEY</FormLabel>
-                    {lists.map((list) => {
-                      let ans = list.questions.map((q) => {
-                        return (
-                          <div>
-                            <p> {q.question_description}</p>
-                            <RadioGroup
-                              name={String(q.question_id)}
-                              value={rates[q.question_id]}
-                              onChange={handleChange}
-                            >
-                              {q.options.map((opt, count) => {
-                                return (
-                                  <FormControlLabel
-                                    value={count + 1}
-                                    control={<Radio />}
-                                    label={opt.option_description}
-                                  />
-                                );
-                              })}
-                            </RadioGroup>
-                          </div>
-                        );
-                      });
-                      return ans;
-                    })}
-                    <TextField
-                      id="free_text"
-                      variant="outlined"
-                      onChange={handleChange2}
-                      label="Add notes here"
-                      multiline={true}
-                      color="secondary"
-                    />
-                    <Button
-                      type="submit"
-                      variant="outlined"
-                      color="primary"
-                      className={classes.button}
-                    >
-                      Check Answers
-                    </Button>
-                  </FormControl>
-                </GridContainer>
-              </form>
+              <GridContainer>
+                <GridItem xs>
+                  <b>Course Code:</b> {props.match.params.code}{" "}
+                </GridItem>
+                <GridItem xs>
+                  <b>Course Name:</b> {props.match.params.name}{" "}
+                </GridItem>
+                <GridItem xs>
+                  <b>Course Instructor:</b> {teacher.first_name}{" "}
+                  {teacher.last_name}
+                </GridItem>
+              </GridContainer>
             </CardBody>
           </Card>
-        )}
-      </GridItem>
-    </GridContainer>
+        </GridItem>
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
+          <FormControl component="fieldset">
+            {lists.map((list) => {
+              let ans = list.questions.map((q) => {
+                return (
+                  <GridItem xs={12} sm={12} md={12}>
+                    <Card>
+                      <CardHeader color="primary">
+                        <h4 className={classes.cardTitleWhite}>
+                          {q.question_description}
+                        </h4>
+                        <p className={classes.cardCategoryWhite}></p>
+                      </CardHeader>
+                      <CardBody>
+                        <RadioGroup
+                          name={String(q.question_id)}
+                          value={rates[q.question_id]}
+                          onChange={handleChange}
+                        >
+                          {q.options.map((opt, count) => {
+                            return (
+                              <FormControlLabel
+                                value={count + 1}
+                                control={<Radio />}
+                                label={opt.option_description}
+                              />
+                            );
+                          })}
+                        </RadioGroup>
+                      </CardBody>
+                    </Card>
+                  </GridItem>
+                );
+              });
+              return ans;
+            })}
+            <GridItem xs={12}>
+              <Card>
+                <CardHeader color="primary">
+                  <h4 className={classes.cardTitleWhite}>
+                    Enter any additional comments here (optional)
+                  </h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Warning: The free text input section is not completely
+                    anonymous, if your comment is innapropriate it will be
+                    reported and your ID will be known.
+                  </p>
+                </CardHeader>
+                <CardBody>
+                  <TextField
+                    id="free_text"
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleChange2}
+                    label="Add any comments here"
+                    multiline={true}
+                    color="secondary"
+                  />
+                </CardBody>
+              </Card>
+            </GridItem>
+            <GridItem xs={12}>
+              <Button
+                type="submit"
+                variant="outlined"
+                color="info"
+                className={classes.button}
+              >
+                Submit Survey
+              </Button>
+            </GridItem>
+          </FormControl>
+        </form>
+      </GridContainer>
+    </div>
   );
 }

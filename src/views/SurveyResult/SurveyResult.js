@@ -12,6 +12,7 @@ import Axios from "axios";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import QuestionResult from "components/QuestionResult/QuestionResult";
+import PaginationTable from "components/PaginationTable/PaginationTable";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 const styles = {
@@ -72,22 +73,26 @@ export default function SurveyResult(props) {
   const [questions, setQuestions] = useState([]);
   const [rate, setRate] = useState(0);
   const [score, setScore] = useState(0);
+  const [participation, setParticipation] = useState(0);
   const [loading, setLoading] = useState(true);
   const [freetext, setFreetext] = useState([]);
+  const [courseinfo, setCourseinfo] = useState();
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/teacher/course/75/4",
+          url: `https://survey-ul.info/server/api/teacher/course/${props.match.params.section_id}/${props.match.params.department_id}`,
           headers: {
             "Content-Type": "application/json",
           },
         });
         setRate(resp.data.participation_rate);
         setScore(parseFloat(resp.data.course_score));
+        setParticipation(parseFloat(resp.data.participation_rate));
         setFreetext(resp.data.free_text);
         setQuestions(resp.data.questions);
+        setCourseinfo(resp.data.course_info);
       } catch (err) {}
     };
     fetchStudents();
@@ -105,19 +110,66 @@ export default function SurveyResult(props) {
     <CircularProgress />
   ) : (
     <GridContainer>
-      <GridItem xs={12} sm={6} md={3}>
-        <Card>
-          <CardHeader color="warning" stats icon>
-            <p className={classes.cardCategory}>Course Score</p>
-            <h3 className={classes.cardTitle}></h3>
-          </CardHeader>
-          <CardBody></CardBody>
-        </Card>
+      <GridItem xs={12} sm={12} md={12}>
+        <GridContainer>
+          <GridItem xs={12} sm={6} md={3}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={classes.cardTitleWhite}>Course Score</h4>
+              </CardHeader>
+              <CardBody>
+                <b>{score} / 100 </b>
+              </CardBody>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={6} md={3}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={classes.cardTitleWhite}>Course Participation</h4>
+              </CardHeader>
+              <CardBody>
+                <b>{participation} % </b>
+              </CardBody>
+            </Card>
+          </GridItem>
+          <GridItem xs={12} sm={6} md={6}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={classes.cardTitleWhite}>Course Info</h4>
+              </CardHeader>
+              <CardBody>
+                <p>
+                  <b>Course Code:</b> {courseinfo.course_code}
+                </p>
+                <p>
+                  <b>Course Name:</b> {courseinfo.course_name}
+                </p>
+                <p>
+                  <b>Course Instructor:</b> {courseinfo.instructor}
+                </p>
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
       </GridItem>
+
       {questions.map((question) => (
         <QuestionResult question={question} />
       ))}
       <QuestionResult question={questions[0]} />
+      <GridItem xs={12} sm={12} md={12}>
+        <Card>
+          <CardHeader color="primary">
+            <h4 className={classes.cardTitleWhite}>Free Text Inputs</h4>
+            <p className={classes.cardCategoryWhite}>
+              These are extra comments by the students
+            </p>
+          </CardHeader>
+          <CardBody>
+            <PaginationTable input={freetext} />
+          </CardBody>
+        </Card>
+      </GridItem>
     </GridContainer>
   );
 }

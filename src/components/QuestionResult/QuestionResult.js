@@ -72,7 +72,6 @@ export default function QuestionResult(props) {
     q.options.forEach((option) => {
       results.push([option.option_description, parseInt(option.count)]);
     });
-    console.log(results);
     return results;
   };
 
@@ -82,7 +81,6 @@ export default function QuestionResult(props) {
       results[0].push(option.option_description);
       results[1].push(parseInt(option.count));
     });
-    console.log(results);
     return results;
   };
   return (

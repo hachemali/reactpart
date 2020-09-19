@@ -25,6 +25,10 @@ import Axios from "axios";
 // core components
 import Admin from "layouts/Admin.js";
 import Teacher from "layouts/Teacher";
+import DepMan from "layouts/DepMan";
+import FacMan from "layouts/FacMan";
+import Dean from "layouts/Dean";
+import President from "layouts/President";
 import SurveyResult from "views/SurveyResult/SurveyResult";
 import SignIn from "views/SignIn/SignIn";
 import Reset from "views/PassReset/PassReset";
@@ -70,6 +74,7 @@ export default function App() {
           <Router history={hist}>
             <Switch>
               <Route path="/admin" component={Admin} />
+              <Route path="/all" component={Admin} />
               <Redirect from="/" to="/admin/dashboard" />
             </Switch>
           </Router>
@@ -79,7 +84,49 @@ export default function App() {
           <Router history={hist}>
             <Switch>
               <Route path="/teacher" component={Teacher} />
+              <Route path="/all" component={Teacher} />
               <Redirect from="/" to="/teacher/dashboard" />
+            </Switch>
+          </Router>
+        );
+      case "department manager":
+        return (
+          <Router history={hist}>
+            <Switch>
+              <Route path="/depman" component={DepMan} />
+              <Route path="/all" component={DepMan} />
+              <Redirect from="/" to="/depman/dashboard" />
+            </Switch>
+          </Router>
+        );
+      case "faculty manager":
+        return (
+          <Router history={hist}>
+            <Switch>
+              <Route path="/facman" component={FacMan} />
+              <Route path="/all" component={FacMan} />
+              <Redirect from="/" to="/facman/dashboard" />
+            </Switch>
+          </Router>
+        );
+      case "dean":
+        return (
+          <Router history={hist}>
+            <Switch>
+              <Route path="/dean" component={Dean} />
+              <Route path="/all" component={Dean} />
+              <Redirect from="/" to="/dean/dashboard" />
+            </Switch>
+          </Router>
+        );
+      case "president":
+        return (
+          <Router history={hist}>
+            <Switch>
+              <Route path="/president" component={President} />
+              <Route path="/dean" component={President} />
+              <Route path="/all" component={President} />
+              <Redirect from="/" to="/president/dashboard" />
             </Switch>
           </Router>
         );

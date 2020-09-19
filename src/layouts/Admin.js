@@ -90,7 +90,7 @@ export default function Admin({ ...rest }) {
         <div className={classes.content}>
           <div className={classes.container}>{switchRoutes}</div>
         </div>
-        <Footer /> : null
+        <Footer />
       </div>
     </div>
   );

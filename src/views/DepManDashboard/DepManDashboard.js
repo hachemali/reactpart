@@ -10,7 +10,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardIcon from "components/Card/CardIcon.js";
 import Icon from "@material-ui/core/Icon";
-import { useCookies } from "react-cookie";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
@@ -69,56 +69,60 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Dashboard() {
-  const [cookies] = useCookies([]);
-  const [students, setstudents] = useState([]);
-  const [Loading, setLoading] = useState(true);
-  const [done, setDone] = useState();
-  const [total, setTotal] = useState();
+export default function DepManDashboard() {
+  const [courses, setCourses] = useState([]);
+  const [score, setScore] = useState(0);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchCourses = async () => {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/student/courses",
+          url: "https://survey-ul.info/server/api/manager/courses",
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setstudents(resp.data.surveys);
-        setDone(resp.data.voted_count);
-        setTotal(resp.data.total_courses);
-      } catch (err) {
-        console.log(err);
-      }
+        setCourses(resp.data);
+      } catch (err) {}
     };
-    fetchStudents();
+    const fetchScore = async () => {
+      try {
+        const resp = await Axios({
+          method: "GET",
+          url: "https://survey-ul.info/server/api/manager/depbranchscore",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        setScore(resp.data.score);
+      } catch (err) {}
+    };
+    fetchCourses();
+    fetchScore();
   }, []);
 
   useEffect(() => {
-    if (students.length) {
+    if (score > 0) {
       setLoading(false);
     }
-  }, [students]);
+  }, [score]);
+
   const classes = useStyles();
-  const getTableData = (students) => {
-    let courses = [];
-    for (const student of students) {
-      let course = [];
-      course.push(student.course_code);
-      course.push(student.course_name);
-      course.push(
-        <a
-          href={`http://localhost:3000/admin/student/course/${student.section_id}/${student.department_id}/${student.course_code}/${student.course_name}`}
-        >
-          {student.course_code}
-        </a>
-      );
-      courses.push(course);
-    }
-    return courses;
+  const getTableData = (courses) => {
+    return courses.map((course) => [
+      course.course_code,
+      course.course_name,
+      course.course_score,
+      course.course_participation,
+      <a href={`http://localhost:3000/all/course/${course.course_id}`}>
+        See Results
+      </a>,
+    ]);
   };
-  return (
+  return loading ? (
+    <CircularProgress />
+  ) : (
     <GridContainer>
       <GridItem xs={12} sm={6} md={3}>
         <Card>
@@ -126,29 +130,31 @@ export default function Dashboard() {
             <CardIcon color="warning">
               <Icon>content_copy</Icon>
             </CardIcon>
-            <p className={classes.cardCategory}>Completed surveys</p>
-            <h3 className={classes.cardTitle}>
-              {done}/{total}
-            </h3>
+            <p className={classes.cardCategory}>General Score</p>
+            <h3 className={classes.cardTitle}>{score}</h3>
           </CardHeader>
         </Card>
       </GridItem>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Available Surveys</h4>
+            <h4 className={classes.cardTitleWhite}>Available Results</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is the remaining courses surveys to submit
+              List of courses in your department
             </p>
           </CardHeader>
           <CardBody>
-            {!Loading && (
-              <Table
-                tableHead={["Course Code", "Course Name", "Survey Link"]}
-                tableData={getTableData(students)}
-                tableHeaderColor="primary"
-              />
-            )}
+            <Table
+              tableHead={[
+                "Course Code",
+                "Course Name",
+                "Score",
+                "Participation",
+                "Survey Link",
+              ]}
+              tableData={getTableData(courses)}
+              tableHeaderColor="primary"
+            />
           </CardBody>
         </Card>
       </GridItem>
