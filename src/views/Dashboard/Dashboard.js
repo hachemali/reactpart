@@ -11,6 +11,8 @@ import CardBody from "components/Card/CardBody.js";
 import CardIcon from "components/Card/CardIcon.js";
 import Icon from "@material-ui/core/Icon";
 import { useCookies } from "react-cookie";
+import Snackbar from "components/Snackbar/Snackbar.js";
+import AddAlert from "@material-ui/icons/AddAlert";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
@@ -69,12 +71,17 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Dashboard() {
+export default function Dashboard(props) {
   const [cookies] = useCookies([]);
   const [students, setstudents] = useState([]);
   const [Loading, setLoading] = useState(true);
   const [done, setDone] = useState();
   const [total, setTotal] = useState();
+  const [notification, setNotification] = useState({
+    color: "",
+    message: "",
+    open: false,
+  });
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -93,6 +100,13 @@ export default function Dashboard() {
       }
     };
     fetchStudents();
+    if (props.location.state) {
+      setNotification({
+        color: props.location.state.color,
+        message: props.location.state.message,
+        open: true,
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -118,8 +132,20 @@ export default function Dashboard() {
     }
     return courses;
   };
+
   return (
     <GridContainer>
+      <Snackbar
+        place={"tc"}
+        color={notification.color}
+        icon={AddAlert}
+        message={notification.message}
+        open={notification.open}
+        closeNotification={() =>
+          setNotification({ color: "", message: "", open: false })
+        }
+        close
+      />
       <GridItem xs={12} sm={6} md={3}>
         <Card>
           <CardHeader color="warning" stats icon>
@@ -138,7 +164,7 @@ export default function Dashboard() {
           <CardHeader color="primary">
             <h4 className={classes.cardTitleWhite}>Available Surveys</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is the remaining courses surveys to submit
+              Here are the remaining surveys to submit
             </p>
           </CardHeader>
           <CardBody>

@@ -77,6 +77,7 @@ export default function SignIn(props) {
   });
 
   const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState();
 
   const [login, setLogin] = useState(false);
 
@@ -91,8 +92,9 @@ export default function SignIn(props) {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
+    let resp;
     try {
-      const resp = await Axios({
+      resp = await Axios({
         method: "POST",
         url: `https://survey-ul.info/server/api/auth/login`,
         headers: {
@@ -110,8 +112,23 @@ export default function SignIn(props) {
       setLogin(true);
       window.location.reload();
     } catch (error) {
+      switch (error.response.status) {
+        case 404:
+          setMessage("User not found. Please try again");
+          break;
+        case 401:
+          setMessage("Wrong id / password combo. Please try again");
+          break;
+
+        default:
+          setMessage(
+            "An error occured while logging in. Please try again later"
+          );
+          break;
+      }
+      setOpen(false);
       setOpen(true);
-      console.log(error.message);
+      console.log(error);
     }
   };
 
@@ -128,7 +145,7 @@ export default function SignIn(props) {
         place={"tc"}
         color={"danger"}
         icon={AddAlert}
-        message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
+        message={message}
         open={open}
         closeNotification={() => setOpen(false)}
         close

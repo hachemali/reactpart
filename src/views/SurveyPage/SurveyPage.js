@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -17,6 +18,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import Axios from "axios";
 import Button from "@material-ui/core/Button";
+import Snackbar from "components/Snackbar/Snackbar.js";
+import AddAlert from "@material-ui/icons/AddAlert";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 const GreenRadio = withStyles({
@@ -90,6 +93,12 @@ export default function SurveyPage(props) {
   const [rates, setRates] = useState({});
   const [freetext, setFreetext] = useState("");
   const [result, setresult] = useState({});
+  const [redirect, setRedirect] = useState(false);
+  const [notification, setNotification] = useState({
+    color: "",
+    message: "",
+    open: false,
+  });
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -130,9 +139,8 @@ export default function SurveyPage(props) {
   }, [lists]);
 
   useEffect(() => {
-    console.log(result);
     if (Object.keys(result).length) {
-      const fetchStudents = async () => {
+      const sendSurvey = async () => {
         try {
           const resp = await Axios({
             method: "POST",
@@ -142,12 +150,18 @@ export default function SurveyPage(props) {
             },
             data: result,
           });
-          console.log(resp);
+          setRedirect(true);
         } catch (error) {
+          setNotification({
+            color: "danger",
+            message:
+              "An error occured while submitting survey. Please try again",
+            open: true,
+          });
           console.log(error.message);
         }
       };
-      fetchStudents();
+      sendSurvey();
     }
   }, [result]);
 
@@ -173,11 +187,35 @@ export default function SurveyPage(props) {
   };
 
   const classes = useStyles();
+  if (redirect) {
+    return (
+      <Redirect
+        to={{
+          pathname: "/admin/dashboard",
+          state: {
+            color: "success",
+            message: "Survey submitted successfully",
+          },
+        }}
+      />
+    );
+  }
 
   return loading ? (
     <p>Loading</p>
   ) : (
     <div>
+      <Snackbar
+        place={"tc"}
+        color={notification.color}
+        icon={AddAlert}
+        message={notification.message}
+        open={notification.open}
+        closeNotification={() =>
+          setNotification({ color: "", message: "", open: false })
+        }
+        close
+      />
       <GridContainer justify="center" alignItems="center">
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -265,6 +303,7 @@ export default function SurveyPage(props) {
                     label="Add any comments here"
                     multiline={true}
                     color="secondary"
+                    inputProps={{ maxLength: 500 }}
                   />
                 </CardBody>
               </Card>
@@ -272,9 +311,9 @@ export default function SurveyPage(props) {
             <GridItem xs={12}>
               <Button
                 type="submit"
-                variant="outlined"
-                color="info"
-                className={classes.button}
+                variant="contained"
+                color="primary"
+                className={classes.submit}
               >
                 Submit Survey
               </Button>
