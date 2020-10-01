@@ -27,9 +27,17 @@ import DepManDashaboard from "views/DepManDashboard/DepManDashboard";
 import FacManDashaboard from "views/FacManDashboard/FacManDashboard";
 import DeanDashboard from "views/DeanDashboard/DeanDashboard";
 import PresidentDashboard from "views/PresidentDashboard/PresidentDashboard";
+import ItDashboard from "views/ItDashboard/ItDashboard";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import SurveyPage from "views/SurveyPage/SurveyPage";
 import SurveyResult from "views/SurveyResult/SurveyResult";
+import SurveyMaker from "views/SurveyMaker/SurveyMaker";
+import QuestionPage from "views/QuestionsPage/QuestionsPage";
+import ListsPage from "views/ListsPage/ListsPage";
+import PackagePage from "views/PackagePage/PackagePage";
+import DatePres from "views/DatePres/DatePres";
+import DateDean from "views/DateDean/DateDean";
+import SurveyResultPres from "views/SurveyResultPres/SurveyResultPres";
 // core components/views for RTL layout
 
 const dashboardRoutes = [
@@ -40,6 +48,15 @@ const dashboardRoutes = [
     component: DashboardPage,
     layout: "/admin",
     role: "student",
+    visible: true,
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: Dashboard,
+    component: ItDashboard,
+    layout: "/it",
+    role: "it",
     visible: true,
   },
   {
@@ -113,6 +130,69 @@ const dashboardRoutes = [
     layout: "/all",
     role: "all",
     visible: false,
+  },
+  {
+    path: "/course/:section_id/:department_id?",
+    name: "Results",
+    icon: Unarchive,
+    component: SurveyResultPres,
+    layout: "/president",
+    role: "president",
+    visible: false,
+  },
+  {
+    path: "/survey",
+    name: "Survey Manager",
+    icon: Unarchive,
+    component: SurveyMaker,
+    layout: "/dean",
+    role: "dean",
+    visible: true,
+  },
+  {
+    path: "/question",
+    name: "Survey Manager",
+    icon: Unarchive,
+    component: QuestionPage,
+    layout: "/dean",
+    role: "dean",
+    visible: false,
+  },
+  {
+    path: "/list",
+    name: "Survey Manager",
+    icon: Unarchive,
+    component: ListsPage,
+    layout: "/dean",
+    role: "dean",
+    visible: false,
+  },
+  {
+    path: "/package",
+    name: "Survey Manager",
+    icon: Unarchive,
+    component: PackagePage,
+    layout: "/dean",
+    role: "dean",
+    visible: false,
+  },
+  {
+    path: "/date",
+    name: "Set Dates",
+    icon: LibraryBooks,
+    component: DateDean,
+    layout: "/dean",
+    role: "deanX",
+    visible: true,
+  },
+  {
+    path: "/date",
+    name: "Set Dates",
+    icon: LibraryBooks,
+    component: DatePres,
+    layout: "/president",
+    role: "president",
+    visible: true,
   },
 ];
 

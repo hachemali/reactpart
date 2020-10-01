@@ -11,7 +11,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardIcon from "components/Card/CardIcon.js";
 import Icon from "@material-ui/core/Icon";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import { BASE_URL, CL_URL } from "../../config";
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
 
@@ -78,7 +78,7 @@ export default function TeacherDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/teacher/courses",
+          url: `${BASE_URL}/teacher/courses`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -90,7 +90,7 @@ export default function TeacherDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/teacher/score",
+          url: `${BASE_URL}/teacher/score`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -117,7 +117,7 @@ export default function TeacherDashboard() {
       course.score,
       course.participation,
       <a
-        href={`http://localhost:3000/teacher/course/${course.section_id}/${course.Department_id}`}
+        href={`${CL_URL}/teacher/course/${course.section_id}/${course.Department_id}`}
       >
         See Results
       </a>,

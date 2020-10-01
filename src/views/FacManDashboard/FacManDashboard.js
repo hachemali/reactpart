@@ -14,7 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
-
+import { BASE_URL, CL_URL } from "../../config";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -81,7 +81,7 @@ export default function FacManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/departments",
+          url: `${BASE_URL}/manager/departments`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -93,7 +93,7 @@ export default function FacManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/facbranchscore",
+          url: `${BASE_URL}/manager/facbranchscore`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -127,9 +127,7 @@ export default function FacManDashboard() {
       course.course_name,
       course.course_score,
       course.course_participation,
-      <a
-        href={`http://localhost:3000/all/course/${course.course_id}/${curDep}`}
-      >
+      <a href={`${CL_URL}/all/course/${course.course_id}/${curDep}`}>
         See Results
       </a>,
     ]);
@@ -139,7 +137,7 @@ export default function FacManDashboard() {
     try {
       const resp = await Axios({
         method: "GET",
-        url: `https://survey-ul.info/server/api/manager/courses/${id}`,
+        url: `${BASE_URL}/manager/courses/${id}`,
         headers: {
           "Content-Type": "application/json",
         },

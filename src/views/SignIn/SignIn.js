@@ -18,19 +18,7 @@ import { LOGIN_USER } from "../../context/actionTypes";
 import campus from "assets/img/campus.jpg";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { BASE_URL } from "../../config";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,7 +84,7 @@ export default function SignIn(props) {
     try {
       resp = await Axios({
         method: "POST",
-        url: `https://survey-ul.info/server/api/auth/login`,
+        url: `${BASE_URL}/auth/login`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -112,6 +100,7 @@ export default function SignIn(props) {
       setLogin(true);
       window.location.reload();
     } catch (error) {
+      console.log(error);
       switch (error.response.status) {
         case 404:
           setMessage("User not found. Please try again");
@@ -183,7 +172,7 @@ export default function SignIn(props) {
               onChange={updateUser}
               value={user.password}
             />
-            <InputLabel id="role-label">Choose your level</InputLabel>
+            <InputLabel id="role-label">Select your role</InputLabel>
             <Select
               labelId="role-label"
               id="role"
@@ -194,6 +183,7 @@ export default function SignIn(props) {
             >
               <MenuItem value={"student"}>Student</MenuItem>
               <MenuItem value={"staff"}>Staff</MenuItem>
+              <MenuItem value={"it"}>IT Manager</MenuItem>
             </Select>
             <Button
               type="submit"
@@ -211,9 +201,6 @@ export default function SignIn(props) {
                 </Link>
               </Grid>
             </Grid>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
           </form>
         </div>
       </Grid>

@@ -14,6 +14,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import TextField from "@material-ui/core/TextField";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
+import { BASE_URL, CL_URL } from "../../config";
 
 const styles = {
   cardCategoryWhite: {
@@ -58,7 +59,7 @@ export default function UserProfile() {
       if (new_password === new_password_2) {
         resp = await Axios({
           method: "POST",
-          url: `https://survey-ul.info/server/api/profile/password`,
+          url: `${BASE_URL}/profile/password`,
           headers: {
             "Content-Type": "application/json",
           },

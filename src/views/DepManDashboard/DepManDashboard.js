@@ -14,7 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
-
+import { BASE_URL, CL_URL } from "../../config";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -78,7 +78,7 @@ export default function DepManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/courses",
+          url: `${BASE_URL}/manager/courses`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -90,7 +90,7 @@ export default function DepManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/depbranchscore",
+          url: `${BASE_URL}/manager/depbranchscore`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -115,9 +115,7 @@ export default function DepManDashboard() {
       course.course_name,
       course.course_score,
       course.course_participation,
-      <a href={`http://localhost:3000/all/course/${course.course_id}`}>
-        See Results
-      </a>,
+      <a href={`${CL_URL}/all/course/${course.course_id}`}>See Results</a>,
     ]);
   };
   return loading ? (

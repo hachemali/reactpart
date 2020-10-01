@@ -14,7 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
-
+import { BASE_URL, CL_URL } from "../../config";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -89,7 +89,7 @@ export default function FacManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/faculties",
+          url: `${BASE_URL}/manager/faculties`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -101,7 +101,7 @@ export default function FacManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/uniscore",
+          url: `${BASE_URL}/manager/uniscore`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -154,9 +154,7 @@ export default function FacManDashboard() {
       course.course_name,
       course.course_score,
       course.course_participation,
-      <a
-        href={`http://localhost:3000/all/course/${course.course_id}/${curDep}`}
-      >
+      <a href={`${CL_URL}/president/course/${course.course_id}/${curDep}`}>
         See Results
       </a>,
     ]);
@@ -168,7 +166,7 @@ export default function FacManDashboard() {
         try {
           const resp = await Axios({
             method: "GET",
-            url: `https://survey-ul.info/server/api/manager/departments/${curFac}/${id}`,
+            url: `${BASE_URL}/manager/departments/${curFac}/${id}`,
             headers: {
               "Content-Type": "application/json",
             },
@@ -188,7 +186,7 @@ export default function FacManDashboard() {
     try {
       const resp = await Axios({
         method: "GET",
-        url: `https://survey-ul.info/server/api/manager/courses/${id}/${curBranch}`,
+        url: `${BASE_URL}/manager/courses/${id}/${curBranch}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -205,7 +203,7 @@ export default function FacManDashboard() {
         try {
           const resp = await Axios({
             method: "GET",
-            url: `https://survey-ul.info/server/api/manager/branches/${id}`,
+            url: `${BASE_URL}/manager/branches/${id}`,
             headers: {
               "Content-Type": "application/json",
             },

@@ -29,11 +29,13 @@ import DepMan from "layouts/DepMan";
 import FacMan from "layouts/FacMan";
 import Dean from "layouts/Dean";
 import President from "layouts/President";
+import It from "layouts/It";
 import SurveyResult from "views/SurveyResult/SurveyResult";
 import SignIn from "views/SignIn/SignIn";
 import Reset from "views/PassReset/PassReset";
 import { Context as AuthContext } from "context/User";
 import { LOGIN_USER } from "context/actionTypes";
+import { BASE_URL } from "./config";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
@@ -49,9 +51,7 @@ export default function App() {
       if (!authUser.isAuth && cookies.x_auth_token) {
         Axios.defaults.headers.common["x_auth_token"] = cookies.x_auth_token;
         try {
-          const resp = await Axios.get(
-            `https://survey-ul.info/server/api/auth/check`
-          );
+          const resp = await Axios.get(`${BASE_URL}/auth/check`);
           setAuthUser({
             action: LOGIN_USER,
             data: resp.data,
@@ -127,6 +127,16 @@ export default function App() {
               <Route path="/dean" component={President} />
               <Route path="/all" component={President} />
               <Redirect from="/" to="/president/dashboard" />
+            </Switch>
+          </Router>
+        );
+      case "it":
+        return (
+          <Router history={hist}>
+            <Switch>
+              <Route path="/it" component={It} />
+              <Route path="/all" component={It} />
+              <Redirect from="/" to="/it/dashboard" />
             </Switch>
           </Router>
         );

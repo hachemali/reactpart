@@ -14,7 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 import { useRadioGroup } from "@material-ui/core";
-
+import { BASE_URL, CL_URL } from "../../config";
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
@@ -86,7 +86,7 @@ export default function FacManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/branches",
+          url: `${BASE_URL}/manager/branches`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -98,7 +98,7 @@ export default function FacManDashboard() {
       try {
         const resp = await Axios({
           method: "GET",
-          url: "https://survey-ul.info/server/api/manager/facscore",
+          url: `${BASE_URL}/manager/facscore`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -142,9 +142,7 @@ export default function FacManDashboard() {
       course.course_name,
       course.course_score,
       course.course_participation,
-      <a
-        href={`http://localhost:3000/all/course/${course.course_id}/${curDep}`}
-      >
+      <a href={`${CL_URL}/all/course/${course.course_id}/${curDep}`}>
         See Results
       </a>,
     ]);
@@ -156,7 +154,7 @@ export default function FacManDashboard() {
         try {
           const resp = await Axios({
             method: "GET",
-            url: `https://survey-ul.info/server/api/manager/departments/x/${id}`,
+            url: `${BASE_URL}/manager/departments/x/${id}`,
             headers: {
               "Content-Type": "application/json",
             },
@@ -176,7 +174,7 @@ export default function FacManDashboard() {
     try {
       const resp = await Axios({
         method: "GET",
-        url: `https://survey-ul.info/server/api/manager/courses/${id}/${curBranch}`,
+        url: `${BASE_URL}/manager/courses/${id}/${curBranch}`,
         headers: {
           "Content-Type": "application/json",
         },

@@ -8,14 +8,12 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import CardIcon from "components/Card/CardIcon.js";
-import Icon from "@material-ui/core/Icon";
 import { useCookies } from "react-cookie";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
+import Button from "@material-ui/core/Button";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
-import { useRadioGroup } from "@material-ui/core";
 import { BASE_URL, CL_URL } from "../../config";
 
 const styles = {
@@ -72,62 +70,86 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function Dashboard(props) {
+export default function ItDashboard(props) {
   const [cookies] = useCookies([]);
-  const [students, setstudents] = useState([]);
+  const [text, settext] = useState([]);
   const [Loading, setLoading] = useState(true);
-  const [done, setDone] = useState();
-  const [total, setTotal] = useState();
   const [notification, setNotification] = useState({
     color: "",
     message: "",
     open: false,
   });
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchtext = async () => {
       try {
         const resp = await Axios({
           method: "GET",
-          url: `${BASE_URL}/student/courses`,
+          url: `${BASE_URL}/it/gettext`,
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setstudents(resp.data.surveys);
-        setDone(resp.data.voted_count);
-        setTotal(resp.data.total_courses);
+        settext(resp.data);
+        console.log(resp.data);
       } catch (err) {
         console.log(err);
       }
     };
-    fetchStudents();
-    if (props.location.state) {
-      setNotification({
-        color: props.location.state.color,
-        message: props.location.state.message,
-        open: true,
-      });
-    }
+    fetchtext();
   }, []);
 
   useEffect(() => {
-    if (students.length) {
+    if (text.length) {
       setLoading(false);
     }
-  }, [students]);
+  }, [text]);
   const classes = useStyles();
-  const getTableData = (students) => {
+
+  const deleteHandle = async (event) => {
+    let data = { id: event.target.id };
+    try {
+      const resp = await Axios({
+        method: "POST",
+        url: `${BASE_URL}/it/remove`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      });
+      setNotification({
+        color: "",
+        message: "",
+        open: false,
+      });
+      setNotification({
+        color: "success",
+        message: "Log handled successfully",
+        open: true,
+      });
+    } catch (err) {
+      setNotification({
+        color: "",
+        message: "",
+        open: false,
+      });
+      setNotification({
+        color: "danger",
+        message: "Error removing log",
+        open: true,
+      });
+      console.log(err);
+    }
+  };
+  const getTableData = (text) => {
     let courses = [];
-    for (const student of students) {
+    for (const inp of text) {
       let course = [];
-      course.push(student.course_code);
-      course.push(student.course_name);
+      course.push(inp.text);
+      course.push(inp.reason);
       course.push(
-        <a
-          href={`${CL_URL}/admin/student/course/${student.section_id}/${student.department_id}/${student.course_code}/${student.course_name}`}
-        >
-          {student.course_code}
-        </a>
+        <Button onClick={deleteHandle} id={inp.id} color="success">
+          Validate
+        </Button>
       );
       courses.push(course);
     }
@@ -147,32 +169,20 @@ export default function Dashboard(props) {
         }
         close
       />
-      <GridItem xs={12} sm={6} md={3}>
-        <Card>
-          <CardHeader color="warning" stats icon>
-            <CardIcon color="warning">
-              <Icon>content_copy</Icon>
-            </CardIcon>
-            <p className={classes.cardCategory}>Completed surveys</p>
-            <h3 className={classes.cardTitle}>
-              {done}/{total}
-            </h3>
-          </CardHeader>
-        </Card>
-      </GridItem>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
             <h4 className={classes.cardTitleWhite}>Available Surveys</h4>
             <p className={classes.cardCategoryWhite}>
-              Here are the remaining surveys to submit
+              Here is the list of free text entries the president flagged for
+              checking
             </p>
           </CardHeader>
           <CardBody>
             {!Loading && (
               <Table
-                tableHead={["Course Code", "Course Name", "Survey Link"]}
-                tableData={getTableData(students)}
+                tableHead={["Free Text", "Reason", "Validate"]}
+                tableData={getTableData(text)}
                 tableHeaderColor="primary"
               />
             )}

@@ -12,7 +12,7 @@ import Axios from "axios";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import QuestionResult from "components/QuestionResult/QuestionResult";
-import PaginationTable from "components/PaginationTable/PaginationTable";
+import PaginationTable2 from "components/PaginationTable2/PaginationTable2";
 import { BASE_URL } from "../../config";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
@@ -70,7 +70,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function SurveyResult(props) {
+export default function SurveyResultPres(props) {
   const [questions, setQuestions] = useState([]);
   const [rate, setRate] = useState(0);
   const [score, setScore] = useState(0);
@@ -167,7 +167,7 @@ export default function SurveyResult(props) {
             </p>
           </CardHeader>
           <CardBody>
-            <PaginationTable input={freetext} />
+            <PaginationTable2 input={freetext} />
           </CardBody>
         </Card>
       </GridItem>

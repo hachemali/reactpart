@@ -20,6 +20,7 @@ import Axios from "axios";
 import Button from "@material-ui/core/Button";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import AddAlert from "@material-ui/icons/AddAlert";
+import { BASE_URL } from "../../config";
 
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 const GreenRadio = withStyles({
@@ -104,7 +105,7 @@ export default function SurveyPage(props) {
       try {
         const resp = await Axios({
           method: "GET",
-          url: `https://survey-ul.info/server/api/student/course/${props.match.params.section_id}/${props.match.params.Department_id}`,
+          url: `${BASE_URL}/student/course/${props.match.params.section_id}/${props.match.params.Department_id}`,
           headers: {
             "Content-Type": "application/json",
           },
@@ -141,10 +142,11 @@ export default function SurveyPage(props) {
   useEffect(() => {
     if (Object.keys(result).length) {
       const sendSurvey = async () => {
+        console.log(result);
         try {
           const resp = await Axios({
             method: "POST",
-            url: `https://survey-ul.info/server/api/student/course/${props.match.params.section_id}`,
+            url: `${BASE_URL}/student/course/${props.match.params.section_id}`,
             headers: {
               "Content-Type": "application/json",
             },
@@ -158,7 +160,7 @@ export default function SurveyPage(props) {
               "An error occured while submitting survey. Please try again",
             open: true,
           });
-          console.log(error.message);
+          console.log(error);
         }
       };
       sendSurvey();
